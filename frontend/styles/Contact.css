@@ -1,0 +1,192 @@
+.contact-backdrop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.contact-panel {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  background: var(--bg-secondary);
+  padding: var(--space-xl) var(--space-xl) var(--space-lg);
+  clip-path: polygon(
+    20px 0%, calc(100% - 20px) 0%,
+    100% 20px, 100% calc(100% - 20px),
+    calc(100% - 20px) 100%, 20px 100%,
+    0% calc(100% - 20px), 0% 20px
+  );
+}
+
+.contact-panel::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  clip-path: polygon(
+    20px 0%, calc(100% - 20px) 0%,
+    100% 20px, 100% calc(100% - 20px),
+    calc(100% - 20px) 100%, 20px 100%,
+    0% calc(100% - 20px), 0% 20px
+  );
+  background: linear-gradient(
+    160deg,
+    rgba(201, 168, 76, 0.06) 0%,
+    transparent 50%,
+    rgba(201, 168, 76, 0.03) 100%
+  );
+  pointer-events: none;
+}
+
+.contact-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.contact-ornament {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.contact-ornament__line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-ornate));
+}
+
+.contact-ornament__line:last-child {
+  background: linear-gradient(90deg, var(--border-ornate), transparent);
+}
+
+.contact-ornament__glyph {
+  font-size: 12px;
+  color: var(--gold);
+  filter: drop-shadow(0 0 6px rgba(201, 168, 76, 0.5));
+}
+
+.contact-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 60%, #8b6914 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.contact-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.contact-section__title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+  margin-bottom: var(--space-sm);
+}
+
+.contact-text {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.contact-email {
+  display: inline-block;
+  margin-top: var(--space-md);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-ornate);
+  padding-bottom: 2px;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.contact-email:hover {
+  color: var(--gold-bright);
+  border-color: var(--gold-bright);
+}
+
+.contact-divider {
+  width: 40%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--border-ornate) 50%,
+    transparent
+  );
+  margin: 0 auto;
+}
+
+.contact-support {
+  font-family: var(--font-body);
+  font-size: 18px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.contact-support__link {
+  color: var(--text-accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-ornate);
+  transition: color var(--transition-fast);
+}
+
+.contact-support__link:hover {
+  color: var(--gold-bright);
+}
+
+.contact-footer {
+  margin-top: var(--space-xl);
+  display: flex;
+  justify-content: center;
+}
+
+.contact-back {
+  background: none;
+  border: 1px solid var(--border-ornate);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.contact-back:hover {
+  background: rgba(201, 168, 76, 0.08);
+  box-shadow: 0 0 12px rgba(201, 168, 76, 0.15);
+}
+
+@media (max-width: 480px) {
+  .contact-backdrop {
+    padding: var(--space-lg) var(--space-sm);
+  }
+
+  .contact-panel {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .contact-title {
+    font-size: 22px;
+  }
+}

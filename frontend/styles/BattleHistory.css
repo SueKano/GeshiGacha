@@ -1,0 +1,304 @@
+.chronicle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  padding: var(--space-md) 0;
+}
+
+.chronicle-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+}
+
+.chronicle-title {
+  font-family: var(--font-display);
+  font-size: clamp(12px, 4vw, 18px);
+  font-weight: 100;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+  text-shadow: 0 0 30px rgba(201, 168, 76, 0.25);
+  margin: 0;
+}
+
+.chronicle-header__ornament {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 100px;
+}
+
+.chronicle-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg) 0;
+  opacity: 0.7;
+}
+
+.chronicle-state__rune {
+  font-size: 28px;
+  color: var(--gold);
+  animation: chronicle-pulse 2s ease-in-out infinite;
+}
+
+@keyframes chronicle-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.1); }
+}
+
+.chronicle-state__scroll {
+  font-size: 48px;
+  opacity: 0.3;
+}
+
+.chronicle-state__text {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-style: italic;
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+}
+
+.chronicle-state__text--error {
+  color: #c0392b;
+}
+
+.chronicle-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  max-width: 680px;
+}
+
+.chronicle-entry {
+  display: grid;
+  grid-template-columns: 1fr 88px;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 8px 12px 8px 10px;
+  background: var(--bg-card);
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+  position: relative;
+  overflow: hidden;
+  animation: entry-reveal 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay);
+  opacity: 0;
+}
+
+@keyframes entry-reveal {
+  from { opacity: 0; transform: translateX(-14px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.chronicle-entry::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.chronicle-entry--victory {
+  border-left-color: #4db87a;
+  box-shadow: -3px 0 16px rgba(77, 184, 122, 0.15), 0 2px 12px rgba(0,0,0,0.3);
+}
+
+.chronicle-entry--victory::before {
+  background: linear-gradient(90deg, rgba(77, 184, 122, 0.06) 0%, transparent 50%);
+}
+
+.chronicle-entry--defeat {
+  border-left-color: #7a1a1a;
+  box-shadow: -3px 0 16px rgba(122, 26, 26, 0.18), 0 2px 12px rgba(0,0,0,0.3);
+}
+
+.chronicle-entry--defeat::before {
+  background: linear-gradient(90deg, rgba(139, 32, 32, 0.06) 0%, transparent 50%);
+}
+
+.chronicle-entry__numeral {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  text-align: center;
+  line-height: 1;
+  padding-left: 4px;
+}
+
+.chronicle-entry__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.chronicle-clash {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.chronicle-clash__vs {
+  font-size: 18px;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.chronicle-fighter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.chronicle-fighter--right {
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.chronicle-fighter__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chronicle-fighter__avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--bg-parchment), var(--bg-parchment-dark));
+  border: 1.5px solid var(--rc, var(--gold));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-dark);
+  box-shadow: 0 0 8px rgba(0,0,0,0.3);
+}
+
+.chronicle-fighter__img {
+  width: 100%;
+  height: 100%;
+}
+
+.chronicle-fighter__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+
+.chronicle-fighter__name {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chronicle-fighter__meta {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chronicle-entry__date {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  letter-spacing: 0.03em;
+}
+
+.chronicle-entry__verdict {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chronicle-verdict {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.chronicle-verdict--win {
+  color: #4db87a;
+  background: rgba(77, 184, 122, 0.08);
+  border: 1px solid rgba(77, 184, 122, 0.28);
+  text-shadow: 0 0 10px rgba(77, 184, 122, 0.35);
+}
+
+.chronicle-verdict--loss {
+  color: #c0392b;
+  background: rgba(192, 57, 43, 0.08);
+  border: 1px solid rgba(192, 57, 43, 0.2);
+}
+
+.chronicle-list-move {
+  transition: transform 0.4s ease;
+}
+
+@media (max-width: 520px) {
+  .chronicle-entry {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .chronicle-entry__verdict {
+    justify-content: flex-start;
+  }
+
+  .chronicle-fighter__avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+
+  .chronicle-fighter__name {
+    font-size: 11px;
+  }
+
+  .chronicle-verdict {
+    font-size: 9px;
+    padding: 3px 6px;
+  }
+}

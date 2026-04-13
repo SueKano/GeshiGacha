@@ -1,0 +1,209 @@
+.privacy-backdrop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.privacy-panel {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  background: var(--bg-secondary);
+  padding: var(--space-xl) var(--space-xl) var(--space-lg);
+  clip-path: polygon(
+    20px 0%, calc(100% - 20px) 0%,
+    100% 20px, 100% calc(100% - 20px),
+    calc(100% - 20px) 100%, 20px 100%,
+    0% calc(100% - 20px), 0% 20px
+  );
+}
+
+.privacy-panel::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  clip-path: polygon(
+    20px 0%, calc(100% - 20px) 0%,
+    100% 20px, 100% calc(100% - 20px),
+    calc(100% - 20px) 100%, 20px 100%,
+    0% calc(100% - 20px), 0% 20px
+  );
+  background: linear-gradient(
+    160deg,
+    rgba(201, 168, 76, 0.06) 0%,
+    transparent 50%,
+    rgba(201, 168, 76, 0.03) 100%
+  );
+  pointer-events: none;
+}
+
+.privacy-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.privacy-ornament {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.privacy-ornament__line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-ornate));
+}
+
+.privacy-ornament__line:last-child {
+  background: linear-gradient(90deg, var(--border-ornate), transparent);
+}
+
+.privacy-ornament__glyph {
+  font-size: 12px;
+  color: var(--gold);
+  filter: drop-shadow(0 0 6px rgba(201, 168, 76, 0.5));
+}
+
+.privacy-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 60%, #8b6914 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-xs);
+}
+
+.privacy-subtitle {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+}
+
+.privacy-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.privacy-section__title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+  margin-bottom: var(--space-sm);
+}
+
+.privacy-text {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.privacy-inline-link {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--text-accent);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-ornate);
+  padding: 0;
+  transition: color var(--transition-fast);
+}
+
+.privacy-inline-link:hover {
+  color: var(--gold-bright);
+}
+
+.privacy-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.privacy-list li {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--text-primary);
+  line-height: 1.5;
+  padding-left: var(--space-md);
+  position: relative;
+}
+
+.privacy-list li::before {
+  content: '\2726';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-size: 8px;
+  top: 6px;
+}
+
+.privacy-list li strong {
+  color: var(--text-accent);
+  font-weight: 600;
+}
+
+.privacy-divider {
+  width: 40%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--border-ornate) 50%,
+    transparent
+  );
+  margin: 0 auto;
+}
+
+.privacy-footer {
+  margin-top: var(--space-xl);
+  display: flex;
+  justify-content: center;
+}
+
+.privacy-back {
+  background: none;
+  border: 1px solid var(--border-ornate);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.privacy-back:hover {
+  background: rgba(201, 168, 76, 0.08);
+  box-shadow: 0 0 12px rgba(201, 168, 76, 0.15);
+}
+
+@media (max-width: 480px) {
+  .privacy-backdrop {
+    padding: var(--space-lg) var(--space-sm);
+  }
+
+  .privacy-panel {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .privacy-title {
+    font-size: 22px;
+  }
+}
