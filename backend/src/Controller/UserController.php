@@ -9,15 +9,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends AbstractController
 {
     #[Route('/api/createUser', name: 'new_user', methods: ['POST'])]
-    public function createUser(Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $entityManager,
-                               RateLimiterFactoryInterface $registrationLimiter): Response
+    public function createUser(Request $request, UserPasswordHasherInterface $hasher,
+                               EntityManagerInterface $entityManager, RateLimiterFactoryInterface $registrationLimiter): Response
     {
         $limiter = $registrationLimiter->create($request->getClientIp());
         if (!$limiter->consume()->isAccepted()) {

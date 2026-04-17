@@ -96,11 +96,19 @@ class BattleController extends AbstractController
         for ($t = 0; $playerHealth > 0 && $enemyHealth > 0; $t++) {
             $playerAttack = $this->calculateAttack($playerCard, $env, $t);
             $playerHeal = $this->calculateHealing($playerCard, $env, $playerAttack);
-            [$enemyShield, $enemyHealth] = $this->applyDamage($enemyShield, $enemyHealth, $playerAttack, $playerHeal);
+            [$enemyShield, $enemyHealth] = $this->applyDamage($enemyShield, $enemyHealth, $playerAttack);
+
+            if ($playerShield <= 0) {
+                $playerHealth = $playerHealth + $playerHeal;
+            }
 
             $enemyAttack = $this->calculateAttack($enemyCard, $env, $t);
             $enemyHeal = $this->calculateHealing($enemyCard, $env, $enemyAttack);
-            [$playerShield, $playerHealth] = $this->applyDamage($playerShield, $playerHealth, $enemyAttack, $enemyHeal);
+            [$playerShield, $playerHealth] = $this->applyDamage($playerShield, $playerHealth, $enemyAttack);
+
+            if ($enemyShield <= 0) {
+                $enemyHealth = $enemyHealth + $enemyHeal;
+            }
 
             $turns[] = [
                 'playerAttack'  => $playerAttack,
@@ -150,7 +158,6 @@ class BattleController extends AbstractController
     {
         $isUserActive = $this->getUser() ? ['user' => $this->getUser()] : [];
         $battles = $this->entityManager->getRepository(BattleHistory::class)->findBy($isUserActive, ['createdAt' => 'DESC'], 5);
-
         return $this->json($battles);
     }
 
@@ -191,7 +198,8 @@ class BattleController extends AbstractController
     }
     private function applyPermanentModifier(int $stat, array $card, array $env, string $statType): int
     {
-        if ($env['turns'] !== 0 || !$this->matchesEnvironment($card, $env) || $env['benefitType'] !== $statType) {
+        if ($env['turns'] !== 0 || !$this->matchesEnvironment($card, $env) || $env['benefitType'] !== $statType ||
+            ($env['benefitType'] === 'health' && $env['isUpAffectedType'])) {
             return $stat;
         }
         $sign = $env['isUpAffectedType'] ? 1 : -1;

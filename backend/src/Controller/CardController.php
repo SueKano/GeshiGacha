@@ -19,17 +19,23 @@ class CardController extends AbstractController
     }
 
     #[Route('/api/getCard', name: 'get_rarity', methods: ['GET'])]
-    public function getRarityCard(): Response
+    public function getRarityCard(Request $request): Response
     {
-        if (!$this->isAllowedPull()) return throw $this->createAccessDeniedException();
+        if (!$this->isAllowedPull()) throw $this->createAccessDeniedException();
 
-        $number = rand(0, 100);
-        $rarity = match (true) {
-            $number < 10 => 'SSR' ,
-            $number < 40 => 'SR',
-            $number >= 40 => 'R',
-        };
-        $card = $this->entityManager->getRepository(Card::class)->findOneByRarity($rarity);
+        $user = $this->getUser();
+        if ($user) {
+            $currentUser = $this->entityManager->getRepository(User::class)->findOneByUsername($user->getUsername());
+            $rarity = $currentUser->getCountToSSR() >= 25 ? 'SSR' : $this->getRarity();
+            $currentUser->setCountToSSR($rarity === 'SSR' ? 0 : $currentUser->getCountToSSR() + 1);
+            $this->entityManager->flush();
+        } else {
+            $forcedRarity = $request->query->get('rarity');
+            $rarity = $forcedRarity ?? $this->getRarity();
+        }
+
+        $cards = $this->entityManager->getRepository(Card::class)->findByRarity($rarity);
+        $card = $cards[array_rand($cards)];
 
         return $this->json($card);
     }
@@ -39,9 +45,6 @@ class CardController extends AbstractController
     {
         $user = $this->getUser();
         $data = json_decode($request->getContent(), true);
-        if (!is_array($data) || !isset($data['card']['name'])) {
-            return new JsonResponse(['error' => 'Datos de carta incompletos.'], Response::HTTP_BAD_REQUEST);
-        }
 
         $card = $this->entityManager->getRepository(Card::class)->findOneByName($data['card']['name']);
         if (!$card) {
@@ -81,17 +84,21 @@ class CardController extends AbstractController
     public function getPullsRemaining(): Response
     {
         $user = $this->entityManager->getRepository(User::class)->findOneByUsername($this->getUser()->getUsername());
-        $today = gmdate('Y-m-d');
         $maxPulls = gmdate('N') === '7' ? 10 : 5;
+        $used = $user->getLastPull() != gmdate('Y-m-d') ? 0 : $user->getPullsUsedToday();
 
-        if ($user->getLastPull() !== $today) {
-            $used = 0;
-        } else {
-            $used = $user->getPullsUsedToday();
-        }
-
-        return $this->json(['remaining' => ($maxPulls - $used), 'max' => $maxPulls]);
+        return $this->json(['remaining' => ($maxPulls - $used), 'max' => $maxPulls, 'count' => $user->getCountToSSR(), 'maxCount' => 25]);
     }
+    private function getRarity(): string
+    {
+        $number = rand(0, 100);
+        return match (true) {
+            $number < 10 => 'SSR',
+            $number < 40 => 'SR',
+            $number >= 40 => 'R',
+        };
+    }
+
     private function isAllowedPull(): bool
     {
         if ($this->getUser() === null) return true;
@@ -105,9 +112,7 @@ class CardController extends AbstractController
             $lastUserPull->setLastPull(gmdate('Y-m-d'));
         }
         $lastUserPull->setPullsUsedToday($lastUserPull->getPullsUsedToday() + 1);
-        $this->entityManager->flush();
 
         return true;
     }
-
 }

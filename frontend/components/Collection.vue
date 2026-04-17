@@ -9,13 +9,13 @@ const userCards = ref([])
 const loading = ref(false)
 const activeFilter = ref('ALL')
 const initialLoad = ref(true)
-const { isAuthenticated, authFetch } = useAuth()
+const { isAuthenticated, doFetch } = useAuth()
 
 onMounted(async () => {
   if (!isAuthenticated.value) return
   loading.value = true
   try {
-    const response = await authFetch('/api/collection')
+    const response = await doFetch('/api/collection')
     if (!response) return
     userCards.value = await response.json()
   } finally {
@@ -43,10 +43,6 @@ const counts = computed(() => {
   })
   return cards
 })
-
-function getColorRarity(rarity) {
-  return RARITIES[rarity]
-}
 </script>
 
 <template>
@@ -83,24 +79,27 @@ function getColorRarity(rarity) {
         <div class="plaque__inner">
           <div v-if="userCard.card.rarity === 'SSR'" class="plaque__shimmer"></div>
           <span class="plaque__badge">{{ userCard.card.rarity }}</span>
-          <WikipediaImage :url-image="userCard.card.urlImage" :name="userCard.card.name" :href="getWikipediaUrl(userCard.card.name)" class="plaque__portrait" />
+          <a :href="getWikipediaUrl(userCard.card.name)" target="_blank" rel="noopener" class="plaque__wiki" @click.stop>
+            <span>Wiki</span>
+            <span class="plaque__wiki-arrow" aria-hidden="true">&#8599;</span>
+          </a>
+          <WikipediaImage :url-image="userCard.card.urlImage" :name="userCard.card.name" class="plaque__portrait" />
           <div class="plaque__info">
             <h3 class="plaque__name">{{ userCard.card.name }}</h3>
             <p class="plaque__type">{{ userCard.card.type }}</p>
           </div>
-
           <div class="plaque__stats">
             <div class="plaque__stat">
               <span class="plaque__stat-icon">ATK </span>
               <div class="plaque__bar">
-                <div class="plaque__bar-fill" :style="{ width: `${Math.min(100, userCard.card.attack ?? 0)}%` }"></div>
+                <div class="plaque__bar-fill" :style="{ width: `${Math.min(100, userCard.card.attack)}%` }"></div>
               </div>
               <span class="plaque__stat-val">{{ userCard.card.attack }}</span>
             </div>
             <div class="plaque__stat">
               <span class="plaque__stat-icon">DEF </span>
               <div class="plaque__bar">
-                <div class="plaque__bar-fill" :style="{ width: `${Math.min(100, userCard.card.defense ?? 0)}%` }"></div>
+                <div class="plaque__bar-fill" :style="{ width: `${Math.min(100, userCard.card.defense)}%` }"></div>
               </div>
               <span class="plaque__stat-val">{{ userCard.card.defense }}</span>
             </div>

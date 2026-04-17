@@ -7,23 +7,26 @@ import WikipediaImage from './WikipediaImage.vue'
 const props = defineProps({
   card: { type: Object, required: true },
   interactive: { type: Boolean, default: true },
+  inBattle: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['pull'])
 const rarity = computed(() => RARITIES[props.card.rarity])
-const wikipediaUrl = computed(() => getWikipediaUrl(props.card.name))
 </script>
 
 <template>
-  <div class="card" :class="[`card--${card.rarity.toLowerCase()}`, {'card--interactive': interactive }]" :style="{
+  <div class="card" :class="[`card--${card.rarity.toLowerCase()}`, {'card--interactive': interactive, 'card--in-battle': inBattle }]" :style="{
     '--rarity-color': rarity.color, '--rarity-glow': rarity.glowColor, '--rarity-glow-intense': rarity.glowColorIntense,
     '--rarity-gradient': rarity.borderGradient }">
     <div class="card__inner" @click="emit('pull')">
       <section class="card__face card__face--front">
         <div class="card__corners" aria-hidden="true"></div>
         <span class="card__rarity-badge">{{ card.rarity }}</span>
-
-        <WikipediaImage :url-image="card.urlImage" :name="card.name" :href="wikipediaUrl" class="card__portrait" />
+        <a v-if="!inBattle" :href="getWikipediaUrl(card.name)" target="_blank" rel="noopener" class="card__wiki" @click.stop>
+          <span>Wiki</span>
+          <span class="card__wiki-arrow" aria-hidden="true">&#8599;</span>
+        </a>
+        <WikipediaImage :url-image="card.urlImage" :name="card.name" class="card__portrait" />
         <header class="card__info">
           <h3 class="card__name">{{ card.name }}</h3>
           <p class="card__title">{{ card.type }}</p>

@@ -22,7 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-*.Command
 skills-lock.json
 .agents
 .claude

@@ -24,6 +24,9 @@ class User extends AbstractEntity implements UserInterface, PasswordAuthenticate
     #[ORM\Column(type: 'integer', options: ['default' => 0])]
     private int $pullsUsedToday = 0;
 
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    private int $countToSSR = 0;
+
     public function getLastPull(): ?string
     {
         return $this->lastPull;
@@ -42,6 +45,16 @@ class User extends AbstractEntity implements UserInterface, PasswordAuthenticate
     public function setPullsUsedToday(int $pullsUsedToday): void
     {
         $this->pullsUsedToday = $pullsUsedToday;
+    }
+
+    public function getCountToSSR(): int
+    {
+        return $this->countToSSR;
+    }
+
+    public function setCountToSSR(int $countToSSR): void
+    {
+        $this->countToSSR = $countToSSR;
     }
 
     public function getPassword(): string

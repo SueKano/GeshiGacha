@@ -6,7 +6,6 @@ export function usePullAnimation() {
   const phase = ref('idle')
   let glowAnimation = null
   let impactBounceAnimation = null
-  let appShakeAnimation = null
   let ssrAnimations = []
   let activeTimelines = []
   let lastEls = null
@@ -14,7 +13,6 @@ export function usePullAnimation() {
   function stopAllAnimations() {
     glowAnimation?.pause(); glowAnimation = null
     impactBounceAnimation?.pause(); impactBounceAnimation = null
-    appShakeAnimation?.pause(); appShakeAnimation = null
     ssrAnimations.forEach(a => a.pause()); ssrAnimations = []
     activeTimelines.forEach(tl => tl.pause()); activeTimelines = []
   }
@@ -27,7 +25,12 @@ export function usePullAnimation() {
 
   function clearSSREffects(els) {
     for (const key of ['ssrRaysEl', 'ssrSpeedLinesEl', 'ssrGoldenFlashEl', 'ssrSilhouetteEl']) {
-      if (els[key]) els[key].style.opacity = '0'
+      if (els[key]) {
+        els[key].style.opacity = '0'
+        for (const inner of els[key].querySelectorAll('.ssr-ray, .ssr-speed-line')) {
+          inner.style.opacity = ''
+        }
+      }
     }
   }
 
@@ -90,9 +93,8 @@ export function usePullAnimation() {
 
   async function revealSSR(els, rarityConfig) {
     phase.value = 'flipping'
-    const appEl = document.getElementById('app')
-    const rayEls = els.ssrRaysEl ? Array.from(els.ssrRaysEl.children) : []
-    const speedLineEls = els.ssrSpeedLinesEl ? Array.from(els.ssrSpeedLinesEl.children) : []
+    const rayEls = els.ssrRaysEl ? Array.from(els.ssrRaysEl.querySelectorAll('.ssr-ray')) : []
+    const speedLineEls = els.ssrSpeedLinesEl ? Array.from(els.ssrSpeedLinesEl.querySelectorAll('.ssr-speed-line')) : []
 
     const flashTl = createTimeline({ autoplay: false })
     flashTl.add(els.ssrGoldenFlashEl, {
@@ -117,14 +119,6 @@ export function usePullAnimation() {
         ease: 'outExpo',
       }, 0)
     }
-    if (appEl) {
-      tensionTl.add(appEl, {
-        translateX: [0, -4, 5, -3, 4, -2, 1, 0],
-        translateY: [0, 2, -3, 1, -2, 1, 0],
-        duration: 500,
-        ease: 'inOutQuad',
-      }, 0)
-    }
     await play(tensionTl)
 
     const raysTl = createTimeline({ autoplay: false })
@@ -135,7 +129,6 @@ export function usePullAnimation() {
     })
     if (rayEls.length > 0) {
       raysTl.add(rayEls, {
-        scaleY: [0, 1],
         opacity: [0, 0.5],
         duration: 500,
         delay: stagger(40, { from: 'center' }),
@@ -167,15 +160,6 @@ export function usePullAnimation() {
     })
     await play(cardTl)
     els.cardEl.style.opacity = ''
-
-    if (appEl) {
-      appShakeAnimation = animate(appEl, {
-        translateX: [0, -2, 3, -1, 0],
-        translateY: [0, 1, -2, 0],
-        duration: 250,
-        ease: 'inOutQuad',
-      })
-    }
 
     phase.value = 'revealed'
     impactBounceAnimation = animate(els.cardEl, {
@@ -305,6 +289,7 @@ export function usePullAnimation() {
     const appEl = document.getElementById('app')
     if (appEl) appEl.style.transform = ''
     if (lastEls) {
+      clearSSREffects(lastEls)
       if (lastEls.sealEl) {
         lastEls.sealEl.style.opacity = ''
         lastEls.sealEl.style.transform = ''

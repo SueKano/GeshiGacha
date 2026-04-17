@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Ignore;
 
@@ -33,7 +34,7 @@ class BattleHistory extends AbstractEntity
         $this->user = $user;
     }
 
-    public function isPlayerWon(): bool
+    public function getIsPlayerWon(): bool
     {
         return $this->isPlayerWon;
     }
@@ -43,6 +44,10 @@ class BattleHistory extends AbstractEntity
         $this->isPlayerWon = $isPlayerWon;
     }
 
+    public function getBattleDate(): string
+    {
+        return $this->createdAt->format('Y-m-d H:i:s');
+    }
 
     public function getEnemyCard(): Card
     {

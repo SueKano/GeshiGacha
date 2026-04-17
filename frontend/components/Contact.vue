@@ -18,7 +18,7 @@ const paypalUrl = 'https://www.paypal.me/jorgesinmas'
       <div class="contact-content">
         <section class="contact-section">
           <h3 class="contact-section__title">Escríbanos</h3>
-          <p class="contact-text">Si tienes alguna duda o sugerencia puede escribirnos a:</p>
+          <p class="contact-text">Si tiene alguna duda o sugerencia puede escribirnos a:</p>
           <a href="mailto:suekanoo@gmail.com" class="contact-email">suekanoo@gmail.com</a>
         </section>
         <section class="contact-section">

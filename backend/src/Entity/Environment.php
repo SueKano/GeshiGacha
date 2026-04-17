@@ -27,6 +27,19 @@ class Environment extends AbstractEntity
     #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $isUpAffectedType = null;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $urlImage = null;
+
+    public function getUrlImage(): ?string
+    {
+        return $this->urlImage;
+    }
+
+    public function setUrlImage(?string $urlImage): void
+    {
+        $this->urlImage = $urlImage;
+    }
+
     public function getIsUpAffectedType(): ?bool
     {
         return $this->isUpAffectedType;

@@ -2,12 +2,15 @@ import { ref, computed } from 'vue'
 import { useAuth } from './useAuth.js'
 
 const STORAGE_KEY = 'daily_pulls'
-const { isAuthenticated, authFetch } = useAuth()
+const { isAuthenticated, doFetch } = useAuth()
+const PULLS_PER_SESSION = 5
 
 export function useDailyPulls() {
   const serverRemaining = ref(null)
   const serverMax = ref(null)
   const serverLoading = ref(isAuthenticated.value)
+  const serverCount = ref(null)
+  const serverMaxCount = ref(null)
 
   function getTodayStr() {
     return new Date().getDay()
@@ -30,26 +33,30 @@ export function useDailyPulls() {
   async function getServerPulls() {
     serverLoading.value = true
     try {
-      const response = await authFetch('/api/pullsRemaining')
+      const response = await doFetch('/api/pullsRemaining')
       if (!response) return
       const data = await response.json()
       serverRemaining.value = data.remaining
       serverMax.value = data.max
+      serverCount.value = data.count ?? null
+      serverMaxCount.value = data.maxCount ?? null
     } catch {
       serverRemaining.value = null
       serverMax.value = null
+      serverPity.value = null
+      serverPityMax.value = null
     } finally {
       serverLoading.value = false
     }
   }
 
   const maxPulls = computed(() => {
-    if (isAuthenticated.value && serverMax.value !== null) return serverMax.value
+    if (isAuthenticated.value && serverMax.value !== null) return serverMax.value / PULLS_PER_SESSION
     return new Date().getDay() === 0 ? 2 : 1
   })
 
   const remainingPulls = computed(() => {
-    if (isAuthenticated.value && serverRemaining.value !== null) return serverRemaining.value
+    if (isAuthenticated.value && serverRemaining.value !== null) return serverRemaining.value / PULLS_PER_SESSION
 
     if (state.value.date !== getTodayStr()) {
       state.value = { date: getTodayStr(), used: 0 }
@@ -67,5 +74,5 @@ export function useDailyPulls() {
     saveState()
   }
 
-  return { canPull, remainingPulls, maxPulls, consumePull, fetchServerPulls: getServerPulls, serverLoading }
+  return { canPull, remainingPulls, maxPulls, consumePull, fetchServerPulls: getServerPulls, serverLoading, serverCount, serverMaxCount }
 }

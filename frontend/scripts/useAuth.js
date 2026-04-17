@@ -16,7 +16,7 @@ export function useAuth() {
   }
 
   const isAuthenticated = computed(() => !!currentUser.value)
-  async function authFetch(url, options = {}) {
+  async function doFetch(url, options = {}) {
     if (isAuthenticated.value) {
       options.headers = {
         ...options.headers,
@@ -31,5 +31,5 @@ export function useAuth() {
     return response
   }
 
-  return { currentUser, isAuthenticated, login, logout, authFetch }
+  return { currentUser, isAuthenticated, login, logout, doFetch }
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Attribute\Ignore;
@@ -20,6 +21,14 @@ class AbstractEntity
     #[ORM\Column(type: 'uuid', unique: true, nullable: false)]
     #[Ignore]
     protected UuidV4 $uuid;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Ignore]
+    protected $updatedAt;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Ignore]
+    protected $createdAt;
 
     public function getUuid(): UuidV4
     {

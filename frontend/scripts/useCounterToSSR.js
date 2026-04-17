@@ -32,5 +32,5 @@ export function useCounterToSSR() {
     save()
   }
 
-  return { countToSSR: countToSSR, maxCountToSSR: maxCountToSSR, isGuaranteed, incrementPity: incrementCount, resetPity: resetCount }
+  return { countToSSR: countToSSR, maxCountToSSR: maxCountToSSR, isGuaranteed, incrementCount, resetCount }
 }

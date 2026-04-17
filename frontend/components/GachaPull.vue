@@ -1,5 +1,5 @@
 <script setup>
-import { ref, nextTick, onMounted } from 'vue'
+import { ref, computed, nextTick, onMounted } from 'vue'
 import { useGachaPull } from '../scripts/useGachaPull.js'
 import { usePullAnimation } from '../scripts/usePullAnimation.js'
 import { useDailyPulls } from '../scripts/useDailyPulls.js'
@@ -11,9 +11,9 @@ import { useAuth } from '../scripts/useAuth.js'
 
 const { lastPulledCard, pullHistory, isPulling, pullCard, addToHistory } = useGachaPull()
 const { phase, runPullSequence, resetAnimation } = usePullAnimation()
-const { canPull, remainingPulls, maxPulls, consumePull, fetchServerPulls, serverLoading } = useDailyPulls()
-const { countToSSR, maxCountToSSR, isGuaranteed, incrementPity, resetPity } = useCounterToSSR()
-const { isAuthenticated, authFetch } = useAuth()
+const { canPull, remainingPulls, maxPulls, consumePull, fetchServerPulls, serverLoading, serverCount, serverMaxCount } = useDailyPulls()
+const { countToSSR, maxCountToSSR, isGuaranteed, incrementCount, resetCount } = useCounterToSSR()
+const { isAuthenticated, doFetch } = useAuth()
 
 const errorMsg = ref('')
 const sealRef = ref(null)
@@ -32,6 +32,15 @@ const pullCount = ref(0)
 const gotSSRInSession = ref(false)
 const sessionActive = ref(false)
 const MAX_PULLS = 5
+
+const displayCount = computed(() => {
+  if (isAuthenticated.value && serverCount.value !== null) return Math.floor(serverCount.value / 5)
+  return countToSSR.value
+})
+const displayMaxCount = computed(() => {
+  if (isAuthenticated.value && serverMaxCount.value !== null) return Math.floor(serverMaxCount.value / 5)
+  return maxCountToSSR
+})
 
 onMounted(() => {
   if (isAuthenticated.value) fetchServerPulls()
@@ -55,8 +64,9 @@ async function handlePull(nextCard = false) {
 
 async function getSinglePull() {
   if (pullCount.value >= MAX_PULLS) return
+  if (cardRef.value) cardRef.value.style.opacity = '0'
 
-  const forceRarity = (isGuaranteed.value && pullCount.value === 0) ? 'SSR' : null
+  const forceRarity = (!isAuthenticated.value && isGuaranteed.value && pullCount.value === 0) ? 'SSR' : null
   const card = await pullCard(forceRarity)
   if (!card) {
     errorMsg.value = 'No se pudo obtener una carta. Inténtalo más tarde.'
@@ -67,7 +77,7 @@ async function getSinglePull() {
   if (card.rarity === 'SSR') gotSSRInSession.value = true
 
   if (isAuthenticated.value) {
-    await authFetch('/api/addCollection', {
+    await doFetch('/api/addCollection', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ card: card })
@@ -100,10 +110,12 @@ function dismissCard() {
   if (phase.value !== 'revealed') return
   if (pullCount.value < MAX_PULLS) return
 
-  if (gotSSRInSession.value) {
-    resetPity()
-  } else {
-    incrementPity()
+  if (!isAuthenticated.value) {
+    if (gotSSRInSession.value) {
+      resetCount()
+    } else {
+      incrementCount()
+    }
   }
   sessionActive.value = false
   resetAnimation()
@@ -127,9 +139,9 @@ function dismissCard() {
       <div class="pity-counter">
         <span class="pity-label">SSR garantizado</span>
         <div class="pity-dots">
-          <span v-for="i in maxCountToSSR" :key="i" class="pity-dot" :class="{ 'pity-dot--filled': i <= countToSSR }"></span>
+          <span v-for="i in displayMaxCount" :key="i" class="pity-dot" :class="{ 'pity-dot--filled': i <= displayCount }"></span>
         </div>
-        <span class="pity-text">{{ countToSSR }}/{{ maxCountToSSR }}</span>
+        <span class="pity-text">{{ displayCount }}/{{ displayMaxCount }}</span>
       </div>
 
       <div class="daily-pulls">
@@ -188,10 +200,14 @@ function dismissCard() {
 
     <div ref="ssrGoldenFlashRef" class="ssr-golden-flash"></div>
     <div ref="ssrRaysRef" class="ssr-rays">
-      <div v-for="i in 12" :key="'ray-'+i" class="ssr-ray" :style="{ transform: `rotate(${i * 30}deg)` }"></div>
+      <div v-for="i in 12" :key="'ray-'+i" class="ssr-ray-wrapper" :style="{ transform: `rotate(${i * 30}deg)` }">
+        <div class="ssr-ray"></div>
+      </div>
     </div>
     <div ref="ssrSpeedLinesRef" class="ssr-speed-lines">
-      <div v-for="i in 20" :key="'sl-'+i" class="ssr-speed-line" :style="{ transform: `rotate(${i * 18}deg)` }"></div>
+      <div v-for="i in 20" :key="'sl-'+i" class="ssr-speed-line-wrapper" :style="{ transform: `rotate(${i * 18}deg)` }">
+        <div class="ssr-speed-line"></div>
+      </div>
     </div>
     <div ref="ssrSilhouetteRef" class="ssr-silhouette">
       <div class="ssr-silhouette-card"></div>

@@ -3,12 +3,14 @@
 namespace App\Command;
 
 use App\Entity\Card;
+use App\Entity\Environment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Mailer\Transport\Smtp\Auth\CramMd5Authenticator;
 
 #[AsCommand(name: 'app:fetch-card-images', description: 'Fetch card images from Wikipedia API')]
 class FetchCardImagesCommand extends Command
@@ -21,7 +23,7 @@ class FetchCardImagesCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $cards = $this->entityManager->getRepository(Card::class)->findBy(['id' => 1]);
+        $cards = $this->entityManager->getRepository(Card::class)->findAll();
 
         $updated = 0;
         $skipped = 0;

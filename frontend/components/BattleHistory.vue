@@ -4,15 +4,14 @@ import { RARITIES } from '../scripts/constants.js'
 import { useAuth } from '../scripts/useAuth.js'
 import ErrorMessage from "./ErrorMessage.vue"
 
-const { isAuthenticated, authFetch } = useAuth()
-
+const { isAuthenticated, doFetch } = useAuth()
 const battles = ref([])
 const loading = ref(true)
 const error = ref(null)
 
 onMounted(async () => {
   try {
-    const response = await authFetch('/api/battleHistory')
+    const response = await doFetch('/api/battleHistory')
     if (!response) return
     battles.value = await response.json()
   } catch {
@@ -41,7 +40,7 @@ onMounted(async () => {
 
     <TransitionGroup v-else name="chronicle-list" tag="div" class="chronicle-entries">
       <article v-for="(battle, idx) in battles" :key="idx" class="chronicle-entry"
-               :class="battle.playerWon ? 'chronicle-entry--victory' : 'chronicle-entry--defeat'" :style="{ '--delay': `${idx * 55}ms` }">
+               :class="battle.isPlayerWon ? 'chronicle-entry--victory' : 'chronicle-entry--defeat'" :style="{ '--delay': `${idx * 55}ms` }">
         <div class="chronicle-entry__body">
           <div class="chronicle-clash">
             <div class="chronicle-fighter">
@@ -56,22 +55,22 @@ onMounted(async () => {
             </div>
             <span class="chronicle-clash__vs">VS</span>
             <div class="chronicle-fighter chronicle-fighter--right">
-              <span class="chronicle-fighter__name">{{ battle.enemyCard.name }}</span>
-              <div class="chronicle-fighter__row">
-                <div class="chronicle-fighter__avatar" :style="{ '--rc': RARITIES[battle.enemyCard.rarity].color }">
-                  <img v-if="battle.enemyCard.urlImage" :src="battle.enemyCard.urlImage" :alt="battle.enemyCard.name" class="chronicle-fighter__img" />
-                  <span v-else>{{ battle.enemyCard.name.charAt(0) }}</span>
-                </div>
+              <div class="chronicle-fighter__info chronicle-fighter__info--right">
+                <span class="chronicle-fighter__name">{{ battle.enemyCard.name }}</span>
                 <span class="chronicle-fighter__meta">{{ battle.enemyCard.rarity }} · {{ battle.enemyCard.type }}</span>
+              </div>
+              <div class="chronicle-fighter__avatar" :style="{ '--rc': RARITIES[battle.enemyCard.rarity].color }">
+                <img v-if="battle.enemyCard.urlImage" :src="battle.enemyCard.urlImage" :alt="battle.enemyCard.name" class="chronicle-fighter__img" />
+                <span v-else>{{ battle.enemyCard.name.charAt(0) }}</span>
               </div>
             </div>
           </div>
-          <time class="chronicle-entry__date">{{ battle.createdAt.split("+")[0].replace("T", " ") }}</time>
         </div>
         <footer class="chronicle-entry__verdict">
-          <span class="chronicle-verdict" :class="battle.playerWon ? 'chronicle-verdict--win' : 'chronicle-verdict--loss'">
-            {{ battle.playerWon ? 'Victoria' : 'Derrota' }}
+          <span class="chronicle-verdict" :class="battle.isPlayerWon ? 'chronicle-verdict--win' : 'chronicle-verdict--loss'">
+            {{ battle.isPlayerWon ? 'Victoria' : 'Derrota' }}
           </span>
+          <time class="chronicle-entry__date">{{ battle.battleDate }}</time>
         </footer>
       </article>
     </TransitionGroup>

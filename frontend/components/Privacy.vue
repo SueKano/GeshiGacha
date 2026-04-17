@@ -21,7 +21,7 @@ const emit = defineEmits(['go-back', 'go-contact'])
           <ul class="privacy-list">
             <li><strong>Correo electrónico</strong> — para que puedas entrar en tu cuenta.</li>
             <li><strong>Contraseña</strong> — se guarda de forma segura. Nadie, ni siquiera el creador, puede ver tu contraseña.</li>
-            <li><strong>Datos de juego</strong> — tus cartas, batallas e invocaciones.</li>
+            <li><strong>Datos del juego</strong> — tus cartas y batallas.</li>
           </ul>
         </section>
 
